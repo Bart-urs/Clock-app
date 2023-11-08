@@ -1,0 +1,267 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: roboto;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #9594d1;
+}
+
+.app {
+    background-color: #2D3748; 
+}
+
+.app, .footer {
+    border-radius: 15px;
+    width: 400px;
+    padding: 20px;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+    border: 3px solid red;
+    animation: colorChange 4s infinite;
+}
+
+@keyframes colorChange {
+    0% {border-color: #9797e9;}
+    25% {border-color: #6161e7;}
+    50% {border-color: #279cb9;}
+    75% {border-color: #6161e7;}
+    100% {border-color: #9797e9;}
+}
+
+p {
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #D1D5DB;
+}
+
+.special-button {
+    width: 100%;
+    background-color: #4B5563; 
+    color: #F3F4F6; 
+    border: 2px solid #9CA3AF; 
+}
+
+.stopwatch-display {
+    color: #FFFFFF; 
+    text-align: center; 
+}
+
+.timer-display {
+    color: #FFFFFF; 
+}
+
+#minutes {
+    display: block;
+    margin: 0 auto;
+    width: 50%; 
+}
+
+#alarmForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#clock {
+    text-align: center;
+    font-size: 3em;
+    margin: 20px;
+    color: #60A5FA;
+}
+
+#date {
+    text-align: center;
+    font-size: 2em;
+    margin: 20px 20px 0px 20px;
+    color: #6EE7B7;
+}
+
+#dayOfWeek {
+    text-align: center;
+    font-size: 1.5em;
+    margin: 0px 20px 20px 20px;
+    color: #6EE7B7;
+}
+
+#timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input, select, button {
+    background-color: #4B5563;
+    border: none;
+    color: #F3F4F6;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 0;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+input#alarmTime {
+    height: 17px;
+}
+
+button:hover, input:hover, select:hover {
+    background-color: #9CA3AF;
+    color: #1F2937;
+    transition: .3s linear;
+}
+
+#buttonContainer {
+    text-align: center;
+}
+
+#dismissButton, #snoozeButton, #snoozeOptions {
+    display: inline-block;
+    justify-content: center;
+    width: 100%;
+}
+
+#alarmList {
+    margin-top: 20px;
+}
+
+#alarmList div {
+    background-color: #4B5563;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    color: #F3F4F6;
+}
+
+#alarmList button {
+    background-color: #EF4444;
+    float: right;
+    margin-left: 10px;
+}
+
+#alarmList button:hover {
+    background-color: #DC2626;
+}
+
+#snoozeContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#snoozeContainer button {
+    background-color: #FBBF24;
+}
+
+#snoozeContainer button:hover {
+    background-color: #F59E0B;
+}
+
+#cancelSnoozeButton {
+    margin-left: 15px;
+}
+
+#notification {
+    font-size: 1.5em;
+    color: #EF4444;
+    text-align: center;
+    margin: 20px 0;
+}
+
+#stopwatch, #timer {
+    font-size: 2em; 
+}
+
+#stopwatchContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+}
+
+#timerContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    gap: 5px;
+}
+
+#stopwatchContainer, #timerContainer  {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+    margin: 0;
+    padding: 0;
+    height: 0;
+    visibility: hidden;
+}
+
+.alarm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#alarmForm input {
+    margin-right: 10px; /* Dodaj odstęp po prawej stronie elementu input */
+}
+
+.pulse {
+    animation: pulse 1s infinite;
+}
+
+.footer {
+    margin-top: 40px;
+    background-color: #2D3748; /* To match the .app class */
+    color: #D1D5DB; /* To match the rest of your text */
+    padding: 20px auto; /* To give some space inside the box */
+    bottom: 0; /* To align it at the bottom */
+    text-align: center; /* To center the text */
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideDown {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+.slide-down {
+    transform: translateY(0);
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide-up {
+    transform: translateY(-100%);
+    transition: transform 0.5s ease-in-out;
+}

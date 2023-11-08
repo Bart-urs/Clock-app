@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Zegar</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <p>Clock APP</p>
+        <div id="date"></div>
+        <div id="dayOfWeek"></div>
+        <div id="clock">
+            <span id="hour"></span> :
+            <span id="minute"></span> :
+            <span id="second"></span>
+        </div>
+        <div id="buttonContainer">
+            <button id="toggleAlarmForm" class="special-button">Ustaw alarm</button>
+        </div>
+        <div id="hiddenContainer">
+            <form id="alarmForm" class="hidden">
+                <input type="time" id="alarmTime" step="60">
+                <button type="submit">Dodaj alarm</button>
+            </form>
+            <div id="alarmList"></div>
+            <div id="buttonContainer">
+                <button id="dismissButton" style="display: none;">Wyłącz alarm</button>
+                <button id="snoozeButton" style="display: none;">Drzemka</button>
+                <select id="snoozeOptions" style="display: none;">
+                    <option value="5">5 minut</option>
+                    <option value="10">10 minut</option>
+                    <option value="15">15 minut</option>
+                    <option value="30">30 minut</option>
+                    <option value="45">45 minut</option>
+                    <option value="60">60 minut</option>
+                </select>
+                <div id="notification"></div>
+                <div id="snoozeContainer">
+                    <button id="cancelSnoozeButton" style="display: none;">Anuluj drzemkę</button>
+                </div>
+            </div>
+            <div id="stopwatchContainer">
+                <button id="stoperText" class="special-button">Stoper</button>
+                <div id="stopwatch" class="stopwatch-display hidden">00:00:00:000</div>
+                <div class="stopwatchButtons">
+                    <button id="stopwatchStartButton" class="hidden" onclick="startStopwatch()">Start</button>
+                    <button id="stopwatchStopButton" class="hidden" onclick="stopStopwatch()">Stop</button>
+                    <button id="stopwatchResetButton" class="hidden" onclick="resetStopwatch()">Reset</button>
+                </div>
+            </div>
+            <div id="timerContainer">
+                <button id="minutnik" class="special-button">Minutnik</button>
+                <div id="timer" class="timer-display hidden">00:00</div>
+                <input id="minutes" type="number" min="1" max="60" class="hidden" placeholder="dodaj minuty">
+                <div class="timerButtons">
+                    <button id="startButton" onclick="startTimer(document.getElementById('minutes').value)" class="hidden">Start</button>
+                    <button id="timerStopButton" class="hidden">Stop</button>
+                    <button id="timerResetButton" class="hidden">Reset</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="footer">
+        Copyright &copy B.art
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
