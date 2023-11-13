@@ -1,10 +1,10 @@
-let alarms = {};
+const alarms = {};
+const countdownDisplay = document.getElementById('notification');
+const alarmList = document.getElementById('alarmList');
+const alarmSound = new Audio('alarm.mp3');
 let countdownInterval;
-let countdownDisplay = document.getElementById('notification');
-let alarmList = document.getElementById('alarmList');
-let alarmSound = new Audio('alarm.mp3');
 let stopwatchIntervalId = null;
-let stopwatchSeconds = 0;
+let stopWatchSeconds = 0;
 let count = 0;
 let intervalId = null;
 let initialCountdown = 0;
