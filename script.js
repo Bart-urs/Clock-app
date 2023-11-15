@@ -1,6 +1,6 @@
 const alarms = {};
 const countdownDisplay = document.getElementById('notification');
-const alarmList = document.getElementById('alarmList');
+const alarmList = document.querySelector('.alarmList');
 const alarmSound = new Audio('alarm.mp3');
 let countdownInterval;
 let stopwatchIntervalId = null;
@@ -12,12 +12,23 @@ let countdown = 0;
 let remainingTime = 0;
 
 const setAlarm = (time, isSnooze = false) => {
+    const now = new Date();
+    const [hours, minutes] = time.split(':');
+    const alarmTime = new Date();
+    alarmTime.setHours(hours);
+    alarmTime.setMinutes(minutes);
+    const timeDifference = alarmTime.getTime() - now.getTime();
     if (!time) {
         alert('Proszę podać czas alarmu.');
         return;
     }
+
+    if (timeDifference < 0) {
+        alert('Czas alarmu nie może być wcześniejszy niż obecny czas.');
+        return;
+    }
+
     let id = Date.now();
-    let alarmTime = time;
 
     let alarmContainer = document.createElement('div');
     alarmContainer.style.display = 'flex';
@@ -35,7 +46,6 @@ const setAlarm = (time, isSnooze = false) => {
             delete alarms[id];
             alarmList.removeChild(alarmContainer);
         });
-
         alarmContainer.appendChild(alarmText);
         alarmContainer.appendChild(deleteButton);
         alarmList.appendChild(alarmContainer);
@@ -43,11 +53,17 @@ const setAlarm = (time, isSnooze = false) => {
 
     alarms[id] = {
         time: alarmTime,
-        element: alarmContainer
+        element: alarmContainer,
+        timeoutId: setTimeout(() => { // Dodajemy opóźnienie
+            alarmSound.play();
+            if (alarmList.contains(alarms[id].element)) {
+                alarmList.removeChild(alarms[id].element);
+            }
+            delete alarms[id];
+            alarmTime.value = '';
+        }, timeDifference * 1000) // Przeliczamy sekundy na milisekundy
     };
 }
-
-
 const updateClock = () => {
     const now = new Date();
     const hours = now.getHours();
@@ -69,30 +85,56 @@ const updateClock = () => {
     document.getElementById('dayOfWeek').innerHTML = dayOfWeek;
 }
 
-
-
-
-
-
 const checkAlarms = () => {
     const now = new Date();
     now.setSeconds(0);
     const currentTime = `${now.getHours()}:${now.getMinutes()}`;
 
     Object.keys(alarms).forEach((id) => {
-        if (alarms[id].time === currentTime) {
+        const alarmTimeString = `${alarms[id].time.getHours()}:${alarms[id].time.getMinutes()}`;
+
+        if (alarmTimeString === currentTime) {
             countdownDisplay.innerHTML = 'Alarm!';
             countdownDisplay.classList.add('pulse');
             document.getElementById('dismissButton').style.display = 'block';
             document.getElementById('snoozeButton').style.display = 'block';
             document.getElementById('snoozeOptions').style.display = 'block';
-            alarmList.removeChild(alarms[id].element);
+            if (alarmList.contains(alarms[id].element)) {
+                alarmList.removeChild(alarms[id].element);
+            }
             delete alarms[id];
             alarmSound.play();
-            alarmTime.value = ''; // resetuje pole do ustawiania alarmu
+            alarmTime.value = '';
         }
     });
 }
+
+document.getElementById('dismissTimerButton').addEventListener('click', () => {
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+    document.getElementById('dismissTimerButton').style.display = 'none';
+    countdownDisplay.innerHTML = '';
+    clearInterval(countdownInterval);
+});
+
+document.getElementById('cancelSnoozeButton').addEventListener('click', () => {
+    clearInterval(countdownInterval);
+    countdownDisplay.innerHTML = '';
+    document.getElementById('hiddenContainer').appendChild(cancelSnoozeButton);
+    cancelSnoozeButton.style.display = 'none';
+    alarmSound.pause();
+    alarmSound.currentTime = 0;
+    Object.keys(alarms).forEach((id) => {
+        if (alarmList.contains(alarms[id].element)) {
+            alarmList.removeChild(alarms[id].element);
+        }
+        delete alarms[id];
+    });
+    // Dodajemy poniższe linie, aby ukryć przyciski
+    document.getElementById('dismissButton').style.display = 'none';
+    document.getElementById('snoozeButton').style.display = 'none';
+    document.getElementById('snoozeOptions').style.display = 'none';
+});
 
 let elapsed = 0;
 
@@ -131,10 +173,10 @@ function resetStopwatch() {
 
 function startTimer(minutes) {
     if (intervalId) {
-        return; 
+        return;
     }
 
-    if (!remainingTime) { 
+    if (!remainingTime) {
         if (!minutes) {
             alert('Proszę wprowadzić wartość minut.');
             return;
@@ -155,7 +197,7 @@ function startTimer(minutes) {
             clearInterval(intervalId);
             intervalId = null;
             alarmSound.play();
-            document.getElementById('dismissButton').style.display = 'block';
+            document.getElementById('dismissTimerButton').style.display = 'block'; // Pokaż przycisk Wyłącz minutnik
         }
     }, 1000);
     document.getElementById('minutes').value = '';
@@ -199,6 +241,33 @@ function hideElement(id) {
 
 function showElement(id) {
     document.getElementById(id).classList.remove('hidden');
+}
+
+function startSnoozeCountdown(minutes) {
+    countdown = minutes * 60;
+    countdownDisplay.innerHTML = 'Drzemka: ' + formatTime(countdown);
+    countdownDisplay.classList.remove('pulse');
+    document.getElementById('cancelSnoozeButton').style.display = 'block'; // Pokaż przycisk "Anuluj drzemkę"
+    countdownInterval = setInterval(() => {
+        countdown--;
+        countdownDisplay.innerHTML = 'Drzemka: ' + formatTime(countdown);
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            countdownDisplay.innerHTML = 'Alarm!';
+            countdownDisplay.classList.add('pulse');
+            alarmSound.play();
+            document.getElementById('dismissButton').style.display = 'block';
+            document.getElementById('snoozeButton').style.display = 'block';
+            document.getElementById('snoozeOptions').style.display = 'block';
+            document.getElementById('cancelSnoozeButton').style.display = 'none'; // Ukryj przycisk "Anuluj drzemkę"
+        }
+    }, 1000);
+}
+
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes < 10 ? "0" : ""}${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 }
 
 document.getElementById('toggleAlarmForm').addEventListener('click', function() {
@@ -256,34 +325,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
         cancelSnoozeButton.style.display = 'none'; // ukryj przycisk "Anuluj drzemkę"
     });
 
-snoozeButton.addEventListener('click', () => {
-    alarmSound.pause();
-    alarmSound.currentTime = 0;
-    let snoozeAlarm = new Date();
-    let snoozeTime = parseInt(snoozeOptions.value);
-    snoozeAlarm.setMinutes(snoozeAlarm.getMinutes() + snoozeTime);
-    setAlarm(snoozeAlarm.getHours() + ':' + snoozeAlarm.getMinutes(), true);
-    snoozeButton.style.display = 'none';
-    snoozeOptions.style.display = 'none';
-    document.getElementById('dismissButton').style.display = 'none';
-
-    let countdown = snoozeTime * 60;
-    countdownInterval = setInterval(() => {
-        countdown--;
-        let minutes = Math.floor(countdown / 60);
-        let seconds = countdown % 60;
-        countdownDisplay.classList.remove('pulse'); // Usuwamy klasę 'pulse'
-        countdownDisplay.innerHTML = `Drzemka: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        if (countdown <= 0) {
-            clearInterval(countdownInterval);
-            countdownDisplay.innerHTML = 'Alarm!';
-        }
-    }, 1000);
-
-    // Ustaw przycisk "Anuluj drzemkę" obok 'countdownDisplay'
-    document.getElementById('snoozeContainer').appendChild(cancelSnoozeButton);
-    cancelSnoozeButton.style.display = 'block';
-});
+    snoozeButton.addEventListener('click', () => {
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+        let snoozeAlarm = new Date();
+        let snoozeTime = parseInt(snoozeOptions.value);
+        snoozeAlarm.setMinutes(snoozeAlarm.getMinutes() + snoozeTime);
+        setAlarm(snoozeAlarm.getHours() + ':' + snoozeAlarm.getMinutes(), true);
+        snoozeButton.style.display = 'none';
+        snoozeOptions.style.display = 'none';
+        document.getElementById('dismissButton').style.display = 'none';
+        startSnoozeCountdown(snoozeTime); // Dodane odliczanie drzemki
+        document.getElementById('snoozeContainer').appendChild(cancelSnoozeButton);
+        cancelSnoozeButton.style.display = 'block';
+    });
 
 setInterval(checkAlarms, 1000);
  document.getElementById('timerStopButton').addEventListener('click', stopTimer);

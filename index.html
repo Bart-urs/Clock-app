@@ -16,7 +16,7 @@
             <span id="minute"></span> :
             <span id="second"></span>
         </div>
-        <div id="buttonContainer">
+        <div class="buttonContainer">
             <button id="toggleAlarmForm" class="special-button">Ustaw alarm</button>
         </div>
         <div id="hiddenContainer">
@@ -24,11 +24,13 @@
                 <input type="time" id="alarmTime" step="60">
                 <button type="submit">Dodaj alarm</button>
             </form>
-            <div id="alarmList"></div>
-            <div id="buttonContainer">
+            <div class="alarmList"></div>
+            <div class="buttonContainer">
                 <button id="dismissButton" style="display: none;">Wyłącz alarm</button>
                 <button id="snoozeButton" style="display: none;">Drzemka</button>
                 <select id="snoozeOptions" style="display: none;">
+                    <option value="1">1 minuta</option>
+                    <option value="3">3 minuty</option>
                     <option value="5">5 minut</option>
                     <option value="10">10 minut</option>
                     <option value="15">15 minut</option>
@@ -59,6 +61,7 @@
                     <button id="timerStopButton" class="hidden">Stop</button>
                     <button id="timerResetButton" class="hidden">Reset</button>
                 </div>
+                <button id="dismissTimerButton" style="display: none;">Wyłącz minutnik</button> <!-- Nowy przycisk Wyłącz minutnik -->
             </div>
         </div>
         
